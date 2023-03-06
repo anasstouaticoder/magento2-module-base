@@ -1,0 +1,35 @@
+{
+    "name": "anasstouaticoder/magento2-module-base",
+    "description": "The base module will contain All common components used by other modules",
+    "keywords": [
+        "magento 2",
+        "back office"
+    ],
+    "authors": [
+        {
+            "name": "Anass TOUATI",
+            "email": "anass1touati@gmail.com",
+            "homepage": "https://www.linkedin.com/in/anass-touati-9a3b028b/",
+            "role": "Leader"
+        }
+    ],
+    "require": {
+        "php": "~7.4.0||~8.1.0",
+        "magento/framework": "*"
+    },
+    "type": "magento2-module",
+    "version": "1.0.0",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "license": [
+        "MIT"
+    ],
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "AnassTouatiCoder\\Base\\": ""
+        }
+    }
+}

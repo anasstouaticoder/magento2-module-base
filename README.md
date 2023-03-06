@@ -10,7 +10,8 @@
 
 
 ## Main Functionalities
-Provide easy way to copy fields path in configuration section
+
+Base Module
 
 ## Installation
 \* = in production please use the `--keep-generated` option
@@ -30,7 +31,7 @@ Provide easy way to copy fields path in configuration section
 
 ### In Back Office
 
-Go to Store => Configuration, I will see that a new section `Atouati Tools` has been added. 
+Go to Store => Configuration, you will see that a new section `Atouati Tools` has been added. 
 
 ## Specifications
 
