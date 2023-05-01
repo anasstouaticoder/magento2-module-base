@@ -56,13 +56,16 @@ abstract class DataMigration implements HttpPostActionInterface
      * @var array
      */
     protected $CSVdata;
+
     /**
      * @var string
      */
-    protected string $xmlPath;
+    protected $xmlPath;
 
-    /** @var array  */
-    protected array $fields;
+    /**
+     * @var array
+     */
+    protected $fields;
 
     /**
      * @param HttpRequest $request

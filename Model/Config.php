@@ -17,15 +17,26 @@ class Config
      * @var ScopeConfigInterface
      */
     protected $scopeConfig;
+
     /**
      * @var string
      */
     protected $xmlPath;
-    private ConfigInterface $configResource;
-    private ?Json $serializer;
+
+    /**
+     * @var ConfigInterface
+     */
+    private $configResource;
+
+    /**
+     * @var Json
+     */
+    private $serializer;
 
     /**
      * @param ScopeConfigInterface $scopeConfig
+     * @param ConfigInterface $configResource
+     * @param Json|null $serializer
      */
     public function __construct(
         ScopeConfigInterface $scopeConfig,
@@ -34,6 +45,7 @@ class Config
     ) {
         $this->scopeConfig = $scopeConfig;
         $this->configResource = $configResource;
+        // For Magento Version < 2.1.17 class Json doesn't exist
         $this->serializer = $serializer ?: ObjectManager::getInstance()->get(Json::class);
     }
 
