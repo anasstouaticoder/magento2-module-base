@@ -14,7 +14,9 @@ use Magento\Framework\Data\Form\Element\CollectionFactory;
 use Magento\Framework\Data\Form\Element\Factory;
 use Magento\Framework\Data\Form\Element\Multiselect;
 use Magento\Framework\Escaper;
+use Magento\Framework\Math\Random;
 use Magento\Framework\Serialize\Serializer\Json;
+use Magento\Framework\View\Helper\SecureHtmlRenderer;
 
 class MultiSelectChooser extends Multiselect
 {
@@ -35,10 +37,14 @@ class MultiSelectChooser extends Multiselect
         CollectionFactory $factoryCollection,
         Escaper           $escaper,
         Json              $json,
-        array             $data = []
+        array $data = [],
+        ?SecureHtmlRenderer $secureRenderer = null,
+        ?Random $random = null
     ) {
         $this->json = $json;
-        parent::__construct($factoryElement, $factoryCollection, $escaper, $data);
+
+        parent::__construct($factoryElement, $factoryCollection, $escaper, $data,$secureRenderer, $random);
+        $this->setNoWrapAsAddon(true);
     }
 
     /**
@@ -46,17 +52,19 @@ class MultiSelectChooser extends Multiselect
      */
     public function getElementHtml()
     {
+        $this->addClass('admin__field-control admin__control-grouped');
         $html = <<<HTML
-<div class="admin__field-control admin__control-grouped">
-<div id="topbanner-category-select" class="admin__field" data-bind="scope:'{$this->getOriginalName()}Chooser'" data-index="index">
+<div id="{$this->getHtmlId()}" {$this->serialize($this->getHtmlAttributes())}  {$this->_getUiId()}
+data-bind="scope:'{$this->getOriginalName()}'" data-index="index">
 <!-- ko foreach: elems() -->
 <input type="hidden" name="{$this->getOriginalName()}" data-bind="value: value" ></input>
 <!-- ko template: elementTmpl --><!-- /ko -->
 <!-- /ko -->
-</div></div>
 
+</div>
+{$this->getAfterElementHtml()}
 HTML;
-        $html .= $this->getAfterElementHtml();
+
         return $html;
     }
 
@@ -65,6 +73,15 @@ HTML;
      * @return mixed
      */
     protected function getOriginalName()
+    {
+        return AbstractElement::getName();
+    }
+
+    /**
+     * get Original name without []
+     * @return mixed
+     */
+    public function getName()
     {
         return AbstractElement::getName();
     }
@@ -82,10 +99,10 @@ HTML;
 "*": {
 "Magento_Ui/js/core/app": {
 "components": {
-"{$this->getOriginalName()}Chooser": {
+"{$this->getOriginalName()}": {
 "component": "uiComponent",
 "children": {
-"select_category": {
+"select_{$this->getOriginalName()}": {
 "component": "AnassTouatiCoder_Base/js/multiselect-chooser",
 "config": {
 "filterOptions": true,
@@ -101,7 +118,7 @@ HTML;
 "newOption": "toggleOptionSelected"
 },
 "config": {
-"dataScope": "select_category",
+"dataScope": "select_{$this->getOriginalName()}",
 "sortOrder": 10
 }
 }
@@ -128,7 +145,7 @@ HTML;
                 'is_active' => 1,
                 'label' => $value['label'],
                 'value' => $value['value'],
-                "__disableTmpl" => 1,
+                "__disableTmpl" => 0,
             ];
         }
 

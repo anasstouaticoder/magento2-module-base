@@ -50,8 +50,8 @@ define([
             }
         },
         initConfig: function (config) {
-           this.targetElementName = config.targetElementName;
-           this._super();
+            this.targetElementName = config.targetElementName;
+            this._super();
         }
     });
 });
