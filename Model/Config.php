@@ -1,5 +1,10 @@
 <?php
-
+/**
+ * Copyright (c) 2023
+ * MIT License
+ * Module AnassTouatiCoder_Base
+ * Author Anass TOUATI anass1touati@gmail.com
+ */
 namespace AnassTouatiCoder\Base\Model;
 
 use Magento\Framework\App\Config\ConfigResource\ConfigInterface;
