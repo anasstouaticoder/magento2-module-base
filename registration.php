@@ -7,6 +7,7 @@
  */
 
 use Magento\Framework\Component\ComponentRegistrar;
-const AT_CODE =  \AnassTouatiCoder\Base\Code::class;
+
+const AT_CODE =  \AT\Code::class;
 
 ComponentRegistrar::register(ComponentRegistrar::MODULE, 'AnassTouatiCoder_Base', __DIR__);

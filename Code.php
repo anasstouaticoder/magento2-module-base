@@ -5,7 +5,7 @@
  * Module AnassTouatiCoder_Base
  * Author Anass TOUATI anass1touati@gmail.com
  */
-namespace AnassTouatiCoder\Base;
+namespace AT;
 
 use Magento\Framework\App\ObjectManager;
 use Psr\Log\LoggerInterface;
@@ -35,6 +35,8 @@ class Code
     }
 
     /**
+     * Get Log
+     *
      * @return LoggerInterface
      */
     public static function getLog()
