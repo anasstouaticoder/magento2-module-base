@@ -110,9 +110,12 @@ abstract class DataMigration implements HttpPostActionInterface
     protected function initDataConfig(): void
     {
         $dataConfig = $this->config->getConfigData($this->getDataConfig());
-        $this->CSVHeader = explode(',', $dataConfig['headers'] ?? '');
         $this->xmlPath = $dataConfig['table_config'];
-        $this->fields = $dataConfig['table_fields'];
+        foreach ($dataConfig['field_list'] as $element) {
+            $this->CSVHeader[] = $element['label'];
+            $this->fields[$element['name']] = $element['type'];
+        }
+
         $this->CSVdata = $this->config->getCSVContent(
             $this->xmlPath ?? '',
             $this->websiteId,

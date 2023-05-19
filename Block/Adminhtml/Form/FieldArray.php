@@ -10,12 +10,18 @@ declare(strict_types=1);
 namespace AnassTouatiCoder\Base\Block\Adminhtml\Form;
 
 use Exception;
+use Magento\Backend\Block\Template\Context;
 use Magento\Backend\Block\Widget\Button;
 use Magento\Config\Block\System\Config\Form\Field\FieldArray\AbstractFieldArray;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\View\Helper\SecureHtmlRenderer;
 
 abstract class FieldArray extends AbstractFieldArray
 {
+    /**
+     * @var string|null
+     */
+    protected $dataConfig = null;
     /*
      * Additional buttons
      */
@@ -44,6 +50,14 @@ abstract class FieldArray extends AbstractFieldArray
             ]
         ]
     ];
+
+    public function __construct(
+        Context $context,
+        array $data = [],
+        ?SecureHtmlRenderer $secureRenderer = null
+    ) {
+        parent::__construct($context, $data, $secureRenderer);
+    }
 
     /**
      * Prepare the layout
@@ -100,5 +114,23 @@ abstract class FieldArray extends AbstractFieldArray
     protected function getDataConfig(): string
     {
         return $this->dataConfig;
+    }
+
+    /**
+     * Prepare rendering the new field by adding all the needed columns
+     */
+    protected function _prepareToRender()
+    {
+        $configData = $this->_scopeConfig->getValue($this->dataConfig);
+        foreach ($configData['field_list'] as $element) {
+            $this->addColumn($element['name'], [
+                'label' => __($element['label']),
+                'type' => $element['type'],
+                'class' => ($element['required'] ? 'required-entry' : '') . ($element['class'] ?? '')
+            ]);
+        }
+
+        $this->_addAfter = $configData['add_after'] ?? 0;
+        $this->_addButtonLabel = __('Add New %1', $configData['field_name'] ?? '');
     }
 }
