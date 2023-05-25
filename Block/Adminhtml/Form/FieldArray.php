@@ -13,7 +13,6 @@ use Exception;
 use Magento\Backend\Block\Template\Context;
 use Magento\Backend\Block\Widget\Button;
 use Magento\Config\Block\System\Config\Form\Field\FieldArray\AbstractFieldArray;
-use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\View\Helper\SecureHtmlRenderer;
 
 class FieldArray extends AbstractFieldArray
@@ -102,10 +101,14 @@ class FieldArray extends AbstractFieldArray
     protected function getDataConfig(): string
     {
         if ($this->dataConfig === null) {
-            $pattern = "/groups\[([^]]+)\]\[groups\]\[([^]]+)\]\[fields\]\[([^]]+)\]\[value\]/";
-            preg_match($pattern, $this->getElement()->getName(), $matches);
-            array_shift($matches);
-            $this->dataConfig = implode('_', $matches ?? []);
+            $pattern = "/\[(.*?)\]/";
+            preg_match_all($pattern, $this->getElement()->getName(), $matches);
+
+            // Filter and concatenate the captured matches with underscores
+            $filteredMatches = array_filter($matches[1], function ($match) {
+                return $match !== 'fields' && $match !== 'value';
+            });
+            $this->dataConfig = implode('_', $filteredMatches);
         }
 
         return $this->dataConfig;
@@ -129,4 +132,3 @@ class FieldArray extends AbstractFieldArray
         $this->_addButtonLabel = __('Add New %1', $configData['field_name'] ?? '');
     }
 }
-

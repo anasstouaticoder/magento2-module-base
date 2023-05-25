@@ -63,33 +63,39 @@ class Import extends DataMigration
             $message = __('No file uploaded');
             $this->messageManager->addErrorMessage($message);
         } else {
-            try {
-                // Get uploaded file
-                $file = $this->request->getFiles('import_file')['tmp_name'];
-                $importData = $this->csv->getData($file);
+            $fileContainer = $this->request->getFiles('import_file');
+            if (isset($fileContainer['tmp_name'])) {
+                try {
+                    // Get uploaded file
+                    $file = $fileContainer['tmp_name'];
+                    $importData = $this->csv->getData($file);
 
-                if (!empty($importData) && isset($importData[0][0]) && $importData[0][0] === $this->CSVHeader[0]) {
-                    array_shift($importData);
-                }
-
-                $columnCount =  count($this->CSVHeader);
-                if ($columnCount === 0) {
-                    $message = __('Please Make sure that the CSV file is not empty');
-                    $this->messageManager->addErrorMessage($message);
-                } else {
-                    $dataToImport = $this->prepareDataToImport($importData);
-                    if (count($dataToImport) > 1) {
-                        $this->config->saveCSVContent($this->xmlPath, $dataToImport, $this->websiteId, $this->storeId);
-                        $message = __('Items have been imported.');
-                        $this->messageManager->addSuccessMessage($message);
-                    } else {
-                        $message = __('No valid items were found');
-                        $this->messageManager->addErrorMessage($message);
+                    if (!empty($importData) && isset($importData[0][0]) && $importData[0][0] === $this->CSVHeader[0]) {
+                        array_shift($importData);
                     }
+
+                    $columnCount =  count($this->CSVHeader);
+                    if ($columnCount === 0) {
+                        $message = __('Please Make sure that the CSV file is not empty');
+                        $this->messageManager->addErrorMessage($message);
+                    } else {
+                        $dataToImport = $this->prepareDataToImport($importData);
+                        if (count($dataToImport) > 1) {
+                            $this->config->saveCSVContent($this->xmlPath, $dataToImport, $this->websiteId, $this->storeId);
+                            $message = __('Items have been imported.');
+                            $this->messageManager->addSuccessMessage($message);
+                        } else {
+                            $message = __('No valid items were found');
+                            $this->messageManager->addErrorMessage($message);
+                        }
+                    }
+                } catch (LocalizedException|\Exception $e) {
+                    $message = __('An error occurred');
+                    $this->messageManager->addErrorMessage(__('An error occurred while importing CSV file: %1', $e->getMessage()));
+                    $this->messageManager->addErrorMessage(__('$e' . $e->getRawMessage()));
                 }
-            } catch (LocalizedException|\Exception $e) {
-                $message = __('An error occurred');
-                $this->messageManager->addErrorMessage(__('An error occurred while importing CSV file: %1', $e->getMessage()));
+            } else {
+                $this->messageManager->addErrorMessage(__('Please upload a file and submit'));
             }
         }
         return $result->setData([$message]);
