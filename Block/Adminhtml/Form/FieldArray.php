@@ -60,14 +60,12 @@ abstract class FieldArray extends AbstractFieldArray
     }
 
     /**
-     * Prepare the layout
-     *
-     * @return $this
-     * @throws LocalizedException
+     * Add import export buttons
+     * @return string
+     * @throws Exception
      */
-    protected function _prepareLayout()
+    protected function _toHtml()
     {
-        parent::_prepareLayout();
         foreach (self::ADDITIONAL_BUTTON_LIST as $buttonAlias => $buttonData) {
             $this->getGenerateComponentData($buttonData);
             $this->setChild(
@@ -75,16 +73,6 @@ abstract class FieldArray extends AbstractFieldArray
                 $this->getLayout()->createBlock(Button::class)->setData($buttonData)
             );
         }
-
-        return $this;
-    }
-    /**
-     * Add import export buttons
-     * @return string
-     * @throws Exception
-     */
-    protected function _toHtml()
-    {
         return parent::_toHtml() . $this->getChildHtml();
     }
 
@@ -94,7 +82,7 @@ abstract class FieldArray extends AbstractFieldArray
      * @param array $element
      * @return void
      */
-    protected function getGenerateComponentDAta(array &$element): void
+    protected function getGenerateComponentData(array &$element): void
     {
         $jsComponentName = array_key_first($element['data_attribute']['mage-init']);
         $element['data_attribute']['mage-init'][$jsComponentName]['url'] =
@@ -113,6 +101,13 @@ abstract class FieldArray extends AbstractFieldArray
      */
     protected function getDataConfig(): string
     {
+        if ($this->dataConfig !== null) {
+            $pattern = "/groups\[([^]]+)\]\[groups\]\[([^]]+)\]\[fields\]\[([^]]+)\]\[value\]/";
+            preg_match($pattern, $this->getElement()->getName(), $matches);
+            array_shift($matches);
+            $this->dataConfig = implode('_', $matches ?? []);
+        }
+
         return $this->dataConfig;
     }
 
@@ -134,3 +129,4 @@ abstract class FieldArray extends AbstractFieldArray
         $this->_addButtonLabel = __('Add New %1', $configData['field_name'] ?? '');
     }
 }
+
