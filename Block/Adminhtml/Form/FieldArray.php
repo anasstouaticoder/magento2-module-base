@@ -101,7 +101,7 @@ class FieldArray extends AbstractFieldArray
      */
     protected function getDataConfig(): string
     {
-        if ($this->dataConfig !== null) {
+        if ($this->dataConfig === null) {
             $pattern = "/groups\[([^]]+)\]\[groups\]\[([^]]+)\]\[fields\]\[([^]]+)\]\[value\]/";
             preg_match($pattern, $this->getElement()->getName(), $matches);
             array_shift($matches);
