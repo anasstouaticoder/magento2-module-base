@@ -16,7 +16,7 @@ use Magento\Config\Block\System\Config\Form\Field\FieldArray\AbstractFieldArray;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\View\Helper\SecureHtmlRenderer;
 
-abstract class FieldArray extends AbstractFieldArray
+class FieldArray extends AbstractFieldArray
 {
     /**
      * @var string|null
