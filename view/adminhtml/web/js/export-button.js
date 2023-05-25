@@ -27,7 +27,7 @@ define([
                     // Create a hidden anchor tag with the download link
                     let link = document.createElement('a');
                     link.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(data));
-                    link.setAttribute('download', dataConfig + '.csv');
+                    link.setAttribute('download', config.dataConfig + '.csv');
                     link.style.display = 'none';
                     document.body.appendChild(link);
                     link.click();
