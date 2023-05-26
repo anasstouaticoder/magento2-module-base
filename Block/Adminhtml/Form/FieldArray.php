@@ -106,7 +106,7 @@ class FieldArray extends AbstractFieldArray
 
             // Filter and concatenate the captured matches with underscores
             $filteredMatches = array_filter($matches[1], function ($match) {
-                return $match !== 'fields' && $match !== 'value';
+                return !in_array($match, ['groups', 'fields', 'value']);
             });
             $this->dataConfig = implode('_', $filteredMatches);
         }
