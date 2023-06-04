@@ -43,7 +43,7 @@ class MultiSelectChooser extends Multiselect
     ) {
         $this->json = $json;
 
-        parent::__construct($factoryElement, $factoryCollection, $escaper, $data,$secureRenderer, $random);
+        parent::__construct($factoryElement, $factoryCollection, $escaper, $data, $secureRenderer, $random);
         $this->setNoWrapAsAddon(true);
     }
 

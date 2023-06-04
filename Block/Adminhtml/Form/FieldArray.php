@@ -50,6 +50,11 @@ class FieldArray extends AbstractFieldArray
         ]
     ];
 
+    /**
+     * @param Context $context
+     * @param array $data
+     * @param SecureHtmlRenderer|null $secureRenderer
+     */
     public function __construct(
         Context $context,
         array $data = [],
