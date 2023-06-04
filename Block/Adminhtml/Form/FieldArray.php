@@ -13,6 +13,8 @@ use Exception;
 use Magento\Backend\Block\Template\Context;
 use Magento\Backend\Block\Widget\Button;
 use Magento\Config\Block\System\Config\Form\Field\FieldArray\AbstractFieldArray;
+use Magento\Framework\DataObject;
+use Magento\Framework\View\Element\BlockInterface;
 use Magento\Framework\View\Helper\SecureHtmlRenderer;
 
 class FieldArray extends AbstractFieldArray
@@ -21,6 +23,11 @@ class FieldArray extends AbstractFieldArray
      * @var string|null
      */
     protected $dataConfig = null;
+
+    /**
+     * @var array
+     */
+    protected array $config = [];
     /*
      * Additional buttons
      */
@@ -49,6 +56,11 @@ class FieldArray extends AbstractFieldArray
             ]
         ]
     ];
+
+    /**
+     * @var GenericRenderer|(GenericRenderer&BlockInterface)|BlockInterface
+     */
+    protected $genericRenderer = [];
 
     /**
      * @param Context $context
@@ -124,16 +136,54 @@ class FieldArray extends AbstractFieldArray
      */
     protected function _prepareToRender()
     {
-        $configData = $this->_scopeConfig->getValue($this->dataConfig);
-        foreach ($configData['field_list'] as $element) {
-            $this->addColumn($element['name'], [
+        $this->config = $this->_scopeConfig->getValue($this->dataConfig);
+        foreach ($this->config['field_list'] as $element) {
+            $elementData = [
                 'label' => __($element['label']),
                 'type' => $element['type'],
                 'class' => ($element['required'] ? 'required-entry' : '') . ($element['class'] ?? '')
-            ]);
+            ];
+            if ($element['type'] === 'select') {
+                $elementData['renderer'] = $this->getGenericRenderer($element['option_list'], $element['name']);
+            }
+            $this->addColumn($element['name'], $elementData);
         }
 
         $this->_addAfter = $configData['add_after'] ?? 0;
         $this->_addButtonLabel = __('Add New %1', $configData['field_name'] ?? '');
+    }
+
+    protected function getGenericRenderer($optionToArrayClass, $fieldName)
+    {
+        if (!isset($this->genericRenderer[$fieldName])) {
+            $this->genericRenderer[$fieldName] = $this->getLayout()->createBlock(
+                GenericRenderer::class,
+                '',
+                ['data' => ['is_render_to_js_template' => true, 'option_array_class' => $optionToArrayClass]]
+            )->setClass(uniqid('') . '_select admin__control-select');
+        }
+
+        return $this->genericRenderer[$fieldName];
+    }
+
+    /**
+     * {@inheritDoc }
+     */
+    protected function _prepareArrayRow(DataObject $row)
+    {
+        $optionExtraAttr = [];
+
+        foreach ($this->config['field_list'] as $element) {
+            if ($element['type'] === 'select') {
+                $optionExtraAttr['option_' . $this->getGenericRenderer($element['option_list'], $element['name'])
+                    ->calcOptionHash($row->getData($element['name'])[0])] =
+                    'selected="selected"';
+            }
+        }
+
+        $row->setData(
+            'option_extra_attrs',
+            $optionExtraAttr
+        );
     }
 }
