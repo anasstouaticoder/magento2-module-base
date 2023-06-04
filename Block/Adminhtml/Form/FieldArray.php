@@ -175,9 +175,9 @@ class FieldArray extends AbstractFieldArray
 
         foreach ($this->config['field_list'] as $element) {
             if ($element['type'] === 'select') {
+                $columnValue = $row->getData($element['name']) ? $row->getData($element['name'])[0] : '';
                 $optionExtraAttr['option_' . $this->getGenericRenderer($element['option_list'], $element['name'])
-                    ->calcOptionHash($row->getData($element['name'])[0])] =
-                    'selected="selected"';
+                    ->calcOptionHash($columnValue)] = 'selected="selected"';
             }
         }
 
