@@ -76,6 +76,27 @@ class FieldArray extends AbstractFieldArray
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function isAddAfter()
+    {
+        $this->_addAfter = isset( $this->config ['add_after']) &&  $this->config ['add_after'] == 1;
+
+        return $this->_addAfter;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function _construct()
+    {
+        if (!$this->_addButtonLabel) {
+            $this->_addButtonLabel = __('Add New %1',  $this->config ['field_name'] ?? '');
+        }
+        parent::_construct();
+    }
+
+    /**
      * Add import export buttons
      * @return string
      * @throws Exception
@@ -148,11 +169,14 @@ class FieldArray extends AbstractFieldArray
             }
             $this->addColumn($element['name'], $elementData);
         }
-
-        $this->_addAfter = $configData['add_after'] ?? 0;
-        $this->_addButtonLabel = __('Add New %1', $configData['field_name'] ?? '');
     }
 
+    /**
+     * @param $optionToArrayClass
+     * @param $fieldName
+     * @return GenericRenderer|(GenericRenderer&BlockInterface)|mixed|null
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
     protected function getGenericRenderer($optionToArrayClass, $fieldName)
     {
         if (!isset($this->genericRenderer[$fieldName])) {
@@ -167,7 +191,7 @@ class FieldArray extends AbstractFieldArray
     }
 
     /**
-     * {@inheritDoc }
+     * {@inheritDoc}
      */
     protected function _prepareArrayRow(DataObject $row)
     {
