@@ -54,7 +54,7 @@ class GenericRenderer extends Select
      */
     protected function getOptionArrayDta() :array
     {
-        // To do remove ObjectManager Logic here
+        // Todo remove ObjectManager Logic here
         $toOptionArray = \Magento\Framework\App\ObjectManager::getInstance()
             ->get($this->getOptionArrayClass())->toOptionArray();
 

@@ -17,7 +17,9 @@ use Magento\Framework\Escaper;
 use Magento\Framework\Math\Random;
 use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Framework\View\Helper\SecureHtmlRenderer;
-
+/**
+ * Todo Move this class to AnassTouatiCoder\Base\Block\Adminhtml\Form\Element
+ */
 class MultiSelectChooser extends Multiselect
 {
     /**
