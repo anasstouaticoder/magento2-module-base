@@ -46,7 +46,7 @@ class Config
     public function __construct(
         ScopeConfigInterface $scopeConfig,
         ConfigInterface $configResource,
-        Json $serializer = null
+        ?Json $serializer = null
     ) {
         $this->scopeConfig = $scopeConfig;
         $this->configResource = $configResource;
